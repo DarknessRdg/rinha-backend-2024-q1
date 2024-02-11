@@ -1,0 +1,68 @@
+version: "3.5"
+
+services:
+  api01: &api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: DarknessRdg/rinha-backend-2024-q1:latest
+    hostname: api01
+    ports:
+      - "3001:3000"
+    depends_on:
+      - db
+    deploy:
+      resources:
+        limits:
+          cpus: "0.45"
+          memory: "200MB"
+
+  api02:
+    <<: *api
+    hostname: api02
+    environment:
+      - DB_HOSTNAME=db
+      - PORT=3000
+    ports:
+      - "3002:3000"
+
+  db:
+    image: postgres:latest
+    hostname: db
+    environment:
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=rinha
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: "0.45"
+          memory: "140MB"
+
+  # load balancer
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api01
+      - api02
+    ports:
+      - "9999:9999"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.15"
+          memory: "10MB"
+
+networks:
+  default:
+    driver: bridge
+    name: rinha-nginx-2024q1
+
+volumes:
+  postgres_data:
