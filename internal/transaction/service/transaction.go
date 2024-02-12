@@ -3,18 +3,16 @@ package service
 import (
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/errs"
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/dto"
+	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/repo"
 )
 
-type AccountRepo interface {
-	IncrementBalance(accountId string, amount int) error
-	ExistsById(accountId string) bool
+
+
+type TransactionService struct {
+	accountRepo repo.IAccountRepo
 }
 
-type TranasctionService struct {
-	accountRepo AccountRepo
-}
-
-func (service *TranasctionService) PostTransaction(
+func (service *TransactionService) PostTransaction(
 	accountId string,
 	transactionDto dto.TransactionDto,
 ) (dto.TransactionResult, error) {
