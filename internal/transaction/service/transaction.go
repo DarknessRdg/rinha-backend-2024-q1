@@ -6,8 +6,6 @@ import (
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/repo"
 )
 
-
-
 type TransactionService struct {
 	accountRepo repo.IAccountRepo
 }
