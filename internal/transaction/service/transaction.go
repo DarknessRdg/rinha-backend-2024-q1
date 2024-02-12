@@ -1,23 +1,42 @@
 package service
 
 import (
-	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/errs"
+	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/domain"
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/dto"
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/repo"
 )
 
 type TransactionService struct {
-	accountRepo repo.IAccountRepo
+	accountRepo     repo.IAccountRepo
+	transactionRepo repo.ITransactionRepo
 }
 
 func (service *TransactionService) PostTransaction(
-	accountId string,
+	id string,
 	transactionDto dto.TransactionDto,
 ) (dto.TransactionResult, error) {
-	var result dto.TransactionResult
-
-	if !service.accountRepo.ExistsById(accountId) {
-		return result, errs.NotFound("account id does not exists")
+	account, err := service.accountRepo.GetByIdAndLock(domain.AccountId(id))
+	if err != nil {
+		return dto.TransactionResult{}, err
 	}
-	return result, nil
+
+	err = account.Debit(domain.MoneyCents(transactionDto.AmountCents))
+	if err != nil {
+		return dto.TransactionResult{}, err
+	}
+
+	err = service.accountRepo.Update(account)
+	if err != nil {
+		return dto.TransactionResult{}, err
+	}
+
+	err = service.transactionRepo.Insert()
+	if err != nil {
+		return dto.TransactionResult{}, err
+	}
+
+	return dto.TransactionResult{
+		LimitCents:   account.Limit,
+		BalanceCents: int(account.Balance),
+	}, nil
 }
