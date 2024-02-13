@@ -13,6 +13,8 @@ func main() {
 		fx.Provide(NewRouter),
 		fx.Provide(NewHTTPServer),
 		fx.Provide(NewConfig),
+		fx.Provide(NewSqlCon),
+		fx.Provide(NewIAccountRepo),
 		fx.Invoke(func(*http.Server) {}),
 	).Run()
 }
