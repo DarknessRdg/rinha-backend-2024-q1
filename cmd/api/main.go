@@ -12,6 +12,7 @@ func main() {
 	fx.New(
 		fx.Provide(NewRouter),
 		fx.Provide(NewHTTPServer),
+		fx.Provide(NewConfig),
 		fx.Invoke(func(*http.Server) {}),
 	).Run()
 }
