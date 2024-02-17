@@ -1,0 +1,9 @@
+# this config is used by the `sql-migrate` lib, which handles
+# the database migrations
+# repository link: https://github.com/rubenv/sql-migrate
+
+development:
+  dialect: postgres
+  datasource: ${DB_URL}
+  dir: scripts/migrations
+  table: migrations

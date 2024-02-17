@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log/slog"
 	"net"
 	"net/http"
 
@@ -11,19 +11,25 @@ import (
 )
 
 func NewHTTPServer(router chi.Router, lc fx.Lifecycle) *http.Server {
-	server := &http.Server{Addr: ":3000", Handler: router}
+	server := &http.Server{Addr: "localhost:3000", Handler: router}
+	log := slog.With("address", server.Addr)
+
+	log.Info("instantiating HTTP Server")
 
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			listen, err := net.Listen("tcp", server.Addr)
 			if err != nil {
+				log.Error("errors listening")
 				return err
 			}
-			fmt.Println("Starting HTTP server at", server.Addr)
+
+			log.Info("starting HTTP server")
 			go server.Serve(listen)
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {
+			log.Info("shutting down server")
 			return server.Shutdown(ctx)
 		},
 	})

@@ -1,10 +1,23 @@
 package main
 
-import "github.com/DarknessRdg/rinha-backend-2024-q1/internal/config"
+import (
+	"github.com/caarlos0/env/v10"
+	"github.com/joho/godotenv"
+
+	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/config"
+)
 
 func NewConfig() config.Config {
-	return config.Config{
-		DbUrl: "",
-		Port:  3000,
+	err := godotenv.Load(".env")
+	if err != nil {
+		panic(err)
 	}
+	cfg := config.Config{}
+
+	err = env.Parse(&cfg)
+	if err != nil {
+		panic(err)
+	}
+
+	return cfg
 }
