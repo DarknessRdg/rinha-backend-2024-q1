@@ -21,6 +21,13 @@ func (a *Account) Debit(debitAmount MoneyCents) error {
 	return nil
 }
 
+func (a *Account) Credit(debitAmount MoneyCents) error {
+	// since credit always add, it will never be "lower"
+	// than the limit
+	a.Balance += debitAmount
+	return nil
+}
+
 func (a *Account) exceedLimit(amount MoneyCents) bool {
 	// since we use negative balance as "amount debited", we need
 	// to compare with negative limit as well

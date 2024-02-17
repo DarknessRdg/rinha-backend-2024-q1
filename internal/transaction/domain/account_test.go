@@ -60,3 +60,15 @@ func TestAccount_Debit(t *testing.T) {
 		})
 	}
 }
+
+func TestAccount_Credit(t *testing.T) {
+
+	t.Run("When add any value to the account, Then add the balance and return no errro", func(t *testing.T) {
+		account := Account{
+			Balance: 1,
+		}
+
+		require.NoError(t, account.Credit(2))
+		require.Equal(t, account.Balance, MoneyCents(3))
+	})
+}
