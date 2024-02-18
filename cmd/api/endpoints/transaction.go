@@ -3,6 +3,7 @@ package endpoints
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/DarknessRdg/rinha-backend-2024-q1/cmd/api/decoder"
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/dto"
@@ -25,7 +26,10 @@ func (e *TransactionEndpoint) Router(r chi.Router) chi.Router {
 
 func (e *TransactionEndpoint) PostTransaction(w http.ResponseWriter, request *http.Request) {
 	decoder := decoder.NewJsonDecoder[dto.TransactionDto]()
-	clientId := chi.URLParam(request, "clientId")
+	clientId, err := strconv.Atoi(chi.URLParam(request, "clientId"))
+	if err != nil {
+		panic(err)
+	}
 
 	transactionDto, err := decoder.Decode(request.Body)
 	if err != nil {
