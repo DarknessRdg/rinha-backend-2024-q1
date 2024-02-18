@@ -2,6 +2,7 @@ package sqlrepo
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/domain"
 )
@@ -11,7 +12,7 @@ type SqlAccountRepo struct {
 }
 
 func (s *SqlAccountRepo) GetByIdAndLock(id domain.AccountId) (*domain.Account, error) {
-	sttmt, err := s.Db.Prepare(`SELECT id, balance, limit FROM account WHERE id = ? FOR UPDATE`)
+	sttmt, err := s.Db.Prepare(`SELECT * FROM account WHERE id = $1 FOR UPDATE`)
 	if err != nil {
 		return nil, err
 	}
@@ -26,7 +27,7 @@ func (s *SqlAccountRepo) GetByIdAndLock(id domain.AccountId) (*domain.Account, e
 }
 
 func (s *SqlAccountRepo) Update(account *domain.Account) error {
-	sttm, err := s.Db.Prepare("UPDATE account SET balance = ?, limit = ? WHERE id = ?")
+	sttm, err := s.Db.Prepare(`UPDATE account SET balance = $1, "limit" = $2 WHERE id = $3`)
 	if err != nil {
 		return err
 	}
@@ -37,7 +38,12 @@ func (s *SqlAccountRepo) Update(account *domain.Account) error {
 
 func (s *SqlAccountRepo) rowToAccount(row *sql.Row) (*domain.Account, error) {
 	account := &domain.Account{}
-	err := row.Scan(&account.Id, &account.Balance, &account.Limit)
+	var id string
+	var balance int
+
+	err := row.Scan(&id, &balance, &account.Limit)
+	account.Id = domain.AccountId(id)
+	account.Balance = domain.MoneyCents(balance)
 
 	// NotFound aren't thread as error. Error should be used for unexpected scenarios
 	// When item is not found, we should return `nil` as the element, instead.
