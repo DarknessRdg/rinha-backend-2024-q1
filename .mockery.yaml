@@ -1,0 +1,9 @@
+with-expecter: true
+include-auto-generated: false
+inpackage: true
+dir: "{{.InterfaceDir}}"
+outpkg: "{{.PackageName}}"
+packages:
+    github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/repo:
+        interfaces:
+            IAccountRepo:
