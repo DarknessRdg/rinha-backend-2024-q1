@@ -56,7 +56,7 @@ make dbmigrations
 Make sure to install `sql-migrate` before running the above command. You can install it using:
 
 ```bash
-go get -v github.com/rubenv/sql-migrate/...
+go install github.com/rubenv/sql-migrate/...@latest
 ```
 
 ### Running the Application
