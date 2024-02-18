@@ -11,7 +11,11 @@ import (
 
 type TransactionService struct {
 	accountRepo     repo.IAccountRepo
-	transactionRepo repo.ITransactionRepo
+	// transactionRepo repo.ITransactionRepo
+}
+
+func NewTransactionService(accountRepo repo.IAccountRepo) *TransactionService {
+	return &TransactionService{accountRepo: accountRepo}
 }
 
 func (service *TransactionService) PostTransaction(
@@ -33,10 +37,10 @@ func (service *TransactionService) PostTransaction(
 		return dto.TransactionResult{}, err
 	}
 
-	err = service.transactionRepo.Insert()
-	if err != nil {
-		return dto.TransactionResult{}, err
-	}
+	// err = service.transactionRepo.Insert()
+	// if err != nil {
+	// 	return dto.TransactionResult{}, err
+	// }
 
 	return dto.TransactionResult{
 		LimitCents:   account.Limit,
