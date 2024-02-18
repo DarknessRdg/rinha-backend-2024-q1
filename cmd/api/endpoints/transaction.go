@@ -28,21 +28,27 @@ func (e *TransactionEndpoint) PostTransaction(w http.ResponseWriter, request *ht
 	decoder := decoder.NewJsonDecoder[dto.TransactionDto]()
 	clientId, err := strconv.Atoi(chi.URLParam(request, "clientId"))
 	if err != nil {
-		panic(err)
+		writeError(err, w)
+		return
 	}
 
 	transactionDto, err := decoder.Decode(request.Body)
 	if err != nil {
-		panic(err)
+		writeError(err, w)
+		return
 	}
 
 	result, err := e.TransactionService.PostTransaction(clientId, transactionDto)
 	if err != nil {
-		panic(err)
+		writeError(err, w)
+		return
 	}
 	response, err := json.Marshal(result)
 	if err != nil {
-		panic(err)
+		writeError(err, w)
+		return
 	}
+
+	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 }
