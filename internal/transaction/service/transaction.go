@@ -19,7 +19,7 @@ func NewTransactionService(accountRepo repo.IAccountRepo) *TransactionService {
 }
 
 func (service *TransactionService) PostTransaction(
-	id string,
+	id int,
 	transactionDto dto.TransactionDto,
 ) (dto.TransactionResult, error) {
 	account, err := service.getAccountLocked(domain.AccountId(id))

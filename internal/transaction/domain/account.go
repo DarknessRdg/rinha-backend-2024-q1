@@ -2,7 +2,7 @@ package domain
 
 import "github.com/DarknessRdg/rinha-backend-2024-q1/internal/errs"
 
-type AccountId string
+type AccountId int
 
 type Account struct {
 	Id      AccountId

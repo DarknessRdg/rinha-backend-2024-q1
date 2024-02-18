@@ -2,7 +2,6 @@ package sqlrepo
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/domain"
 )
@@ -18,7 +17,7 @@ func (s *SqlAccountRepo) GetByIdAndLock(id domain.AccountId) (*domain.Account, e
 	}
 	defer sttmt.Close()
 
-	row := sttmt.QueryRow(string(id))
+	row := sttmt.QueryRow(int(id))
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +37,7 @@ func (s *SqlAccountRepo) Update(account *domain.Account) error {
 
 func (s *SqlAccountRepo) rowToAccount(row *sql.Row) (*domain.Account, error) {
 	account := &domain.Account{}
-	var id string
+	var id int
 	var balance int
 
 	err := row.Scan(&id, &balance, &account.Limit)
