@@ -6,12 +6,12 @@ import (
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/errs"
 )
 
-func writeError(err error, resposne http.ResponseWriter) {
+func writeError(err error, response http.ResponseWriter) {
 	apiErr, ok := err.(errs.ApiError)
 
 	if ok {
-		resposne.WriteHeader(int(apiErr.StatusCode))
+		response.WriteHeader(int(apiErr.StatusCode))
 	}
 
-	resposne.Write([]byte(err.Error()))
+	response.Write([]byte(err.Error()))
 }
