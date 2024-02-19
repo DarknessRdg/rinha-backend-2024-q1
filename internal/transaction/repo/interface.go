@@ -15,5 +15,5 @@ type IAccountRepo interface {
 }
 
 type ITransactionRepo interface {
-	Insert() error
+	Insert(transaction domain.Transaction) error
 }

@@ -14,6 +14,7 @@ func main() {
 		fx.Provide(NewConfig),
 		fx.Provide(NewSqlCon),
 		fx.Provide(NewIAccountRepo),
+		fx.Provide(NewITransactionRepo),
 		fx.Provide(NewITransactionService),
 		fx.Provide(endpoints.NewTransactionEndpoint),
 		fx.Invoke(func(*http.Server) {}),

@@ -2,6 +2,7 @@ package service
 
 import (
 	"strings"
+	"time"
 
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/errs"
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/domain"
@@ -11,11 +12,11 @@ import (
 
 type TransactionService struct {
 	accountRepo     repo.IAccountRepo
-	// transactionRepo repo.ITransactionRepo
+	transactionRepo repo.ITransactionRepo
 }
 
-func NewTransactionService(accountRepo repo.IAccountRepo) *TransactionService {
-	return &TransactionService{accountRepo: accountRepo}
+func NewTransactionService(accountRepo repo.IAccountRepo, transactionRepo repo.ITransactionRepo) *TransactionService {
+	return &TransactionService{accountRepo: accountRepo, transactionRepo: transactionRepo}
 }
 
 func (service *TransactionService) PostTransaction(
@@ -37,10 +38,17 @@ func (service *TransactionService) PostTransaction(
 		return dto.TransactionResult{}, err
 	}
 
-	// err = service.transactionRepo.Insert()
-	// if err != nil {
-	// 	return dto.TransactionResult{}, err
-	// }
+	transaction := domain.Transaction{
+		AccountId:   account.Id,
+		Amount:      domain.MoneyCents(transactionDto.AmountCents),
+		Description: transactionDto.Description,
+		Type:        transactionDto.Type,
+		CreatedAt:   time.Now(),
+	}
+	err = service.transactionRepo.Insert(transaction)
+	if err != nil {
+		return dto.TransactionResult{}, err
+	}
 
 	return dto.TransactionResult{
 		LimitCents:   account.Limit,

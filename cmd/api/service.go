@@ -5,6 +5,6 @@ import (
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/service"
 )
 
-func NewITransactionService(accountRepo repo.IAccountRepo) service.ITransactionService {
-	return service.NewTransactionService(accountRepo)
+func NewITransactionService(accountRepo repo.IAccountRepo, transactionRepo repo.ITransactionRepo) service.ITransactionService {
+	return service.NewTransactionService(accountRepo, transactionRepo)
 }

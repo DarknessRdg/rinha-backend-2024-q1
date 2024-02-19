@@ -10,3 +10,7 @@ import (
 func NewIAccountRepo(db *sql.DB) repo.IAccountRepo {
 	return &sqlrepo.SqlAccountRepo{Db: db}
 }
+
+func NewITransactionRepo(db *sql.DB) repo.ITransactionRepo {
+	return sqlrepo.NewSqlTransactionRepo(db)
+}
