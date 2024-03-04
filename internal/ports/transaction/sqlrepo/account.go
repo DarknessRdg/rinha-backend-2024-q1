@@ -3,21 +3,29 @@ package sqlrepo
 import (
 	"database/sql"
 
-	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/domain"
+	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/account/domain"
 )
 
 type SqlAccountRepo struct {
 	Db *sql.DB
 }
 
+func (s *SqlAccountRepo) GetById(id domain.AccountId) (*domain.Account, error) {
+	return s.queryOne(`SELECT * FROM account WHERE id = $1`, int(id))
+}
+
 func (s *SqlAccountRepo) GetByIdAndLock(id domain.AccountId) (*domain.Account, error) {
-	sttmt, err := s.Db.Prepare(`SELECT * FROM account WHERE id = $1 FOR UPDATE`)
+	return s.queryOne(`SELECT * FROM account WHERE id = $1 FOR UPDATE`, int(id))
+}
+
+func (s *SqlAccountRepo) queryOne(sttmTemplate string, params ...any) (*domain.Account, error) {
+	sttmt, err := s.Db.Prepare(sttmTemplate)
 	if err != nil {
 		return nil, err
 	}
 	defer sttmt.Close()
 
-	row := sttmt.QueryRow(int(id))
+	row := sttmt.QueryRow(params...)
 	if err != nil {
 		return nil, err
 	}

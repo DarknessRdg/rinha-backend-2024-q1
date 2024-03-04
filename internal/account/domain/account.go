@@ -1,6 +1,10 @@
 package domain
 
-import "github.com/DarknessRdg/rinha-backend-2024-q1/internal/errs"
+import (
+	"fmt"
+
+	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/errs"
+)
 
 type AccountId int
 
@@ -8,6 +12,16 @@ type Account struct {
 	Id      AccountId
 	Balance MoneyCents
 	Limit   int
+}
+
+func (a *Account) UpdateBalance(amount MoneyCents, operation Operation) error {
+	switch operation {
+	case OperationCredit:
+		return a.Credit(amount)
+	case OperationDebit:
+		return a.Debit(amount)
+	}
+	return fmt.Errorf("invalid operation")
 }
 
 func (a *Account) Debit(debitAmount MoneyCents) error {

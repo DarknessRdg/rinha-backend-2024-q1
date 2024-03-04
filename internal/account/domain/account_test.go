@@ -63,7 +63,7 @@ func TestAccount_Debit(t *testing.T) {
 
 func TestAccount_Credit(t *testing.T) {
 
-	t.Run("When add any value to the account, Then add the balance and return no errro", func(t *testing.T) {
+	t.Run("When add any value to the account, Then add the balance and return no error", func(t *testing.T) {
 		account := Account{
 			Balance: 1,
 		}

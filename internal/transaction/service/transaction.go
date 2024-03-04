@@ -4,6 +4,7 @@ import (
 	"strings"
 	"time"
 
+	account_service "github.com/DarknessRdg/rinha-backend-2024-q1/internal/account/service"
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/errs"
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/domain"
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/dto"
@@ -11,38 +12,34 @@ import (
 )
 
 type TransactionService struct {
-	accountRepo     repo.IAccountRepo
+	accountService  account_service.IAccountService
 	transactionRepo repo.ITransactionRepo
 }
 
-func NewTransactionService(accountRepo repo.IAccountRepo, transactionRepo repo.ITransactionRepo) *TransactionService {
-	return &TransactionService{accountRepo: accountRepo, transactionRepo: transactionRepo}
+func NewTransactionService(
+	accountService account_service.IAccountService,
+	transactionRepo repo.ITransactionRepo,
+) *TransactionService {
+	return &TransactionService{
+		accountService:  accountService,
+		transactionRepo: transactionRepo,
+	}
 }
 
 func (service *TransactionService) PostTransaction(
 	id int,
 	transactionDto dto.TransactionDto,
 ) (dto.TransactionResult, error) {
-	account, err := service.getAccountLocked(domain.AccountId(id))
-	if err != nil {
-		return dto.TransactionResult{}, err
-	}
-
-	err = service.creditOrDebit(account, transactionDto)
-	if err != nil {
-		return dto.TransactionResult{}, err
-	}
-
-	err = service.accountRepo.Update(account)
+	account, err := service.accountService.CreditOrDebit(id, transactionDto.AmountCents, transactionDto.Type)
 	if err != nil {
 		return dto.TransactionResult{}, err
 	}
 
 	transaction := domain.Transaction{
-		AccountId:   account.Id,
+		AccountId:   domain.AccountId(account.Id),
 		Amount:      domain.MoneyCents(transactionDto.AmountCents),
 		Description: transactionDto.Description,
-		Type:        transactionDto.Type,
+		Type:        domain.Operation(transactionDto.Type),
 		CreatedAt:   time.Now(),
 	}
 	err = service.transactionRepo.Insert(transaction)
@@ -54,28 +51,4 @@ func (service *TransactionService) PostTransaction(
 		LimitCents:   account.Limit,
 		BalanceCents: int(account.Balance),
 	}, nil
-}
-
-func (service *TransactionService) getAccountLocked(id domain.AccountId) (*domain.Account, error) {
-	account, err := service.accountRepo.GetByIdAndLock(id)
-	if err != nil {
-		return nil, err
-	}
-	if account == nil {
-		return nil, errs.NotFound("Account not found.")
-	}
-	return account, nil
-}
-
-func (service *TransactionService) creditOrDebit(account *domain.Account, transaction dto.TransactionDto) error {
-	amount := domain.MoneyCents(transaction.AmountCents)
-
-	switch strings.ToLower(transaction.Type) {
-	case "d":
-		return account.Debit(amount)
-	case "c":
-		return account.Credit(amount)
-	}
-
-	return errs.UnprocessableEntity("Invalid transaction type. It should be either 'c' or 'd'")
 }
