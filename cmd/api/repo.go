@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 
-	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/ports/transaction/sqlrepo"
+	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/ports/sqlrepo"
 	transaction_repo "github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/repo"
 	account_repo "github.com/DarknessRdg/rinha-backend-2024-q1/internal/account/repo"
 )
