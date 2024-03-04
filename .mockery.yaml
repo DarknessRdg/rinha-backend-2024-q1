@@ -6,5 +6,10 @@ outpkg: "{{.PackageName}}"
 packages:
     github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/repo:
         interfaces:
-            IAccountRepo:
             ITransactionRepo:
+    github.com/DarknessRdg/rinha-backend-2024-q1/internal/account/repo:
+        interfaces:
+            IAccountRepo:
+    github.com/DarknessRdg/rinha-backend-2024-q1/internal/account/service:
+        interfaces:
+            IAccountService:
