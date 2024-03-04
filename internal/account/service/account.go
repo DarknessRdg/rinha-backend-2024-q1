@@ -13,6 +13,10 @@ type AccountService struct {
 	accountRepo repo.IAccountRepo
 }
 
+func NewAccountService(accountRepo repo.IAccountRepo) *AccountService {
+	return &AccountService{accountRepo: accountRepo}
+}
+
 func (service *AccountService) CreditOrDebit(accountId int, amountCents int, operation string) (dto.AccountDto, error) {
 	id, amount := domain.AccountId(accountId), domain.MoneyCents(amountCents)
 
@@ -37,6 +41,7 @@ func (service *AccountService) CreditOrDebit(accountId int, amountCents int, ope
 	}
 
 	return dto.AccountDto{
+		Id: accountId,
 		Limit:   account.Limit,
 		Balance: int(account.Balance),
 	}, nil
