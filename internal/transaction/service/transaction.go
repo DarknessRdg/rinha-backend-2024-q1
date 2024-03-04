@@ -1,11 +1,9 @@
 package service
 
 import (
-	"strings"
 	"time"
 
 	account_service "github.com/DarknessRdg/rinha-backend-2024-q1/internal/account/service"
-	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/errs"
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/domain"
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/dto"
 	"github.com/DarknessRdg/rinha-backend-2024-q1/internal/transaction/repo"

@@ -20,9 +20,9 @@ func (_m *MockITransactionRepo) EXPECT() *MockITransactionRepo_Expecter {
 	return &MockITransactionRepo_Expecter{mock: &_m.Mock}
 }
 
-// Insert provides a mock function with given fields: transaction
-func (_m *MockITransactionRepo) Insert(transaction domain.Transaction) error {
-	ret := _m.Called(transaction)
+// Insert provides a mock function with given fields: _a0
+func (_m *MockITransactionRepo) Insert(_a0 domain.Transaction) error {
+	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Insert")
@@ -30,7 +30,7 @@ func (_m *MockITransactionRepo) Insert(transaction domain.Transaction) error {
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(domain.Transaction) error); ok {
-		r0 = rf(transaction)
+		r0 = rf(_a0)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -44,12 +44,12 @@ type MockITransactionRepo_Insert_Call struct {
 }
 
 // Insert is a helper method to define mock.On call
-//   - transaction domain.Transaction
-func (_e *MockITransactionRepo_Expecter) Insert(transaction interface{}) *MockITransactionRepo_Insert_Call {
-	return &MockITransactionRepo_Insert_Call{Call: _e.mock.On("Insert", transaction)}
+//   - _a0 domain.Transaction
+func (_e *MockITransactionRepo_Expecter) Insert(_a0 interface{}) *MockITransactionRepo_Insert_Call {
+	return &MockITransactionRepo_Insert_Call{Call: _e.mock.On("Insert", _a0)}
 }
 
-func (_c *MockITransactionRepo_Insert_Call) Run(run func(transaction domain.Transaction)) *MockITransactionRepo_Insert_Call {
+func (_c *MockITransactionRepo_Insert_Call) Run(run func(_a0 domain.Transaction)) *MockITransactionRepo_Insert_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(domain.Transaction))
 	})
